@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paper.js Rollercoaster</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #FFF8DC;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" resize></canvas>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
+  <script>
+    // Install Paper.js globally
+    paper.install(window);
+    // Set up the canvas
+    paper.setup('myCanvas');
+
+    // Create a simple rollercoaster path
+    const path = new Path({
+      segments: [[50, 300], [200, 100], [400, 400], [600, 200], [800, 300]],
+      strokeColor: 'black',
+      strokeWidth: 5,
+      strokeCap: 'round',
+    });
+
+    // Add a cart to move along the path
+    const cart = new Path.Circle({
+      center: path.firstSegment.point,
+      radius: 10,
+      fillColor: 'red',
+    });
+
+    let offset = 0; // Animation offset
+    const speed = 2; // Speed of the cart
+
+    function onFrame(event) {
+      offset += speed;
+      if (offset > path.length) offset = 0; // Loop the animation
+      const point = path.getPointAt(offset);
+      if (point) cart.position = point;
+    }
+
+    // Attach the animation to the frame event
+    view.onFrame = onFrame;
+
+    // Adjust canvas size on window resize
+    window.onresize = () => {
+      paper.view.viewSize = new Size(window.innerWidth, window.innerHeight);
+    };
+  </script>
+</body>
+</html>
